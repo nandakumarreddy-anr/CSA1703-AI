@@ -1,0 +1,53 @@
+print("192365034 NANDA REDDY")
+from collections import deque
+
+def print_board(board):
+    for i in range(0, 9, 3):
+        print(" ".join(str(x) if x != 0 else "." for x in board[i:i+3]))
+
+def solve(start):
+    goal = [1,2,3,4,5,6,7,8,0]
+    queue = deque([(start, [])])
+    seen = set([tuple(start)])
+    
+    while queue:
+        board, path = queue.popleft()
+        if board == goal:
+            return path
+        zero = board.index(0)
+        for move, pos in [
+            ('U', zero-3), ('D', zero+3), 
+            ('L', zero-1), ('R', zero+1)
+        ]:
+            if 0 <= pos < 9 and (zero//3 == pos//3 or zero%3 == pos%3):
+                new = board.copy()
+                new[zero], new[pos] = new[pos], new[zero]
+                if tuple(new) not in seen:
+                    seen.add(tuple(new))
+                    queue.append((new, path + [move]))
+    return None
+
+def show_solution(start, solution):
+    board = start.copy()
+    print("Initial board:")
+    print_board(board)
+    print("\nSolving...\n")
+    
+    for step, move in enumerate(solution, 1):
+        zero = board.index(0)
+        pos = zero + (-3 if move == 'U' else 3 if move == 'D' else -1 if move == 'L' else 1)
+        board[zero], board[pos] = board[pos], board[zero]
+        
+        print(f"Step {step}: Move {move}")
+        print_board(board)
+        print()
+
+# Example puzzle (solvable)
+puzzle = [1,2,3,4,0,5,7,8,6]
+solution = solve(puzzle)
+
+if solution:
+    print(f"Found solution in {len(solution)} moves!\n")
+    show_solution(puzzle, solution)
+else:
+    print("No solution exists for this puzzle configuration")
