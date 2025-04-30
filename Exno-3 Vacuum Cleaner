@@ -1,0 +1,46 @@
+print("192365034 NANDA REDDY")
+class VacuumCleaner:
+    def __init__(self):
+        self.location = 'A'  # Starts in room A
+        self.cleaned = {'A': False, 'B': False}  # Track cleanliness
+    
+    def perceive(self, room_status):
+        """Perceive if current room is dirty"""
+        return room_status[self.location]
+    
+    def act(self, room_status):
+        """Simple reflex agent rules"""
+        if self.perceive(room_status):
+            self.cleaned[self.location] = True
+            return 'Suck'
+        elif self.location == 'A':
+            self.location = 'B'
+            return 'Move to B'
+        else:
+            self.location = 'A'
+            return 'Move to A'
+    
+    def run(self, environment):
+        """Run the agent in the environment"""
+        print(f"Initial state - Room A: {'Dirty' if environment['A'] else 'Clean'}, "
+              f"Room B: {'Dirty' if environment['B'] else 'Clean'}")
+        
+        for i in range(4):  # Run for 4 steps
+            action = self.act(environment)
+            print(f"Step {i+1}: In room {self.location}, Action: {action}")
+            
+            # Environment changes after sucking
+            if action == 'Suck':
+                environment[self.location] = False
+            
+            print(f"  Room A: {'Dirty' if environment['A'] else 'Clean'}, "
+                  f"Room B: {'Dirty' if environment['B'] else 'Clean'}")
+
+# Example usage
+if __name__ == "__main__":
+    # Create environment (True = Dirty, False = Clean)
+    env = {'A': True, 'B': True}
+    
+    # Create and run vacuum cleaner
+    vc = VacuumCleaner()
+    vc.run(env)
