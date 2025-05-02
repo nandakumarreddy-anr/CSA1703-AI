@@ -1,0 +1,65 @@
+print("192365034 NANDA REDDY")
+from itertools import permutations
+from functools import lru_cache
+
+# Brute-force TSP implementation
+def tsp_bruteforce(graph):
+    n = len(graph)
+    min_path = None
+    min_cost = float('inf')
+    
+    for path in permutations(range(n)):
+        current_cost = 0
+        valid = True
+        
+        for i in range(n):
+            current_city = path[i]
+            next_city = path[(i + 1) % n]
+            if graph[current_city][next_city] == 0 and current_city != next_city:
+                valid = False
+                break
+            current_cost += graph[current_city][next_city]
+        
+        if valid and current_cost < min_cost:
+            min_cost = current_cost
+            min_path = path
+    
+    return min_path, min_cost
+
+# Dynamic Programming TSP implementation
+def tsp_dp(graph):
+    n = len(graph)
+    
+    @lru_cache(maxsize=None)
+    def dp(mask, pos):
+        if mask == (1 << n) - 1:
+            return graph[pos][0]  # Return to starting city
+        
+        min_cost = float('inf')
+        for city in range(n):
+            if not (mask & (1 << city)):
+                new_cost = graph[pos][city] + dp(mask | (1 << city), city)
+                if new_cost < min_cost:
+                    min_cost = new_cost
+        return min_cost
+    
+    return dp(1, 0)  # Start with mask 0001 (only city 0 visited), position 0
+
+# Define the graph (distance matrix) for both implementations
+graph = [
+    [0, 10, 15, 20],  # Distances from city 0
+    [10, 0, 35, 25],   # Distances from city 1
+    [15, 35, 0, 30],   # Distances from city 2
+    [20, 25, 30, 0]    # Distances from city 3
+]
+
+# Test brute-force approach
+print("Brute-force approach:")
+path, cost = tsp_bruteforce(graph)
+print(f"Optimal path: {path}")
+print(f"Minimum cost: {cost}")
+
+# Test DP approach
+print("\nDynamic Programming approach:")
+min_cost = tsp_dp(graph)
+print(f"Minimum cost: {min_cost}")
