@@ -1,0 +1,41 @@
+print("192365034 NANDA REDDY")
+# Define the graph first
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+# Recursive DFS implementation
+def dfs_recursive(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(node)
+    print(node, end=" ")
+    
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            dfs_recursive(graph, neighbor, visited)
+
+# Iterative DFS implementation
+def dfs_iterative(graph, start):
+    visited = set()
+    stack = [start]
+    
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            print(node, end=" ")
+            visited.add(node)
+            # Push neighbors in reverse order to visit left-to-right
+            stack.extend(reversed(graph[node]))  
+
+# Test both implementations
+print("Recursive DFS:")
+dfs_recursive(graph, 'A')
+
+print("\n\nIterative DFS:")
+dfs_iterative(graph, 'A')
