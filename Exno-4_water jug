@@ -1,0 +1,74 @@
+print("192365034 NANDA REDDY")
+from collections import deque
+
+def water_jug_bfs(jug1_cap, jug2_cap, target):
+    visited = set()
+    queue = deque([(0, 0, [])])  # (jug1, jug2, path)
+    
+    while queue:
+        jug1, jug2, path = queue.popleft()
+        
+        if jug1 == target or jug2 == target:
+            # Print the solution path
+            print("\nSolution Path:")
+            print("(0, 0)")  # Initial state
+            for state in path:
+                print(state)
+            print(f"Target {target} reached!")
+            return True
+        
+        if (jug1, jug2) in visited:
+            continue
+            
+        visited.add((jug1, jug2))
+        
+        # Generate all possible next states
+        # 1. Fill jug1
+        if jug1 < jug1_cap:
+            new_state = (jug1_cap, jug2)
+            queue.append((*new_state, path + [new_state]))
+        
+        # 2. Fill jug2
+        if jug2 < jug2_cap:
+            new_state = (jug1, jug2_cap)
+            queue.append((*new_state, path + [new_state]))
+        
+        # 3. Empty jug1
+        if jug1 > 0:
+            new_state = (0, jug2)
+            queue.append((*new_state, path + [new_state]))
+        
+        # 4. Empty jug2
+        if jug2 > 0:
+            new_state = (jug1, 0)
+            queue.append((*new_state, path + [new_state]))
+        
+        # 5. Pour from jug1 to jug2
+        pour_amount = min(jug1, jug2_cap - jug2)
+        if pour_amount > 0:
+            new_state = (jug1 - pour_amount, jug2 + pour_amount)
+            queue.append((*new_state, path + [new_state]))
+        
+        # 6. Pour from jug2 to jug1
+        pour_amount = min(jug2, jug1_cap - jug1)
+        if pour_amount > 0:
+            new_state = (jug1 + pour_amount, jug2 - pour_amount)
+            queue.append((*new_state, path + [new_state]))
+    
+    print("\nNo solution exists for these parameters.")
+    return False
+
+def main():
+    print("Water Jug Problem Solver")
+    print("------------------------")
+    jug1 = 4  # Fixed as per your example
+    jug2 = 3   # Fixed as per your example
+    target = 2 # Fixed as per your example
+    
+    print(f"Jug sizes: {jug1}-gallon and {jug2}-gallon")
+    print(f"Target: {target} gallons\n")
+    
+    water_jug_bfs(jug1, jug2, target)
+
+if __name__ == "__main__":
+    main()
