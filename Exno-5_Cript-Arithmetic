@@ -1,0 +1,42 @@
+print("192365034 NANDA REDDY")
+from itertools import permutations
+
+def solve_cryptarithmetic(puzzle):
+    # Extract all unique letters from the puzzle
+    letters = set()
+    for word in puzzle:
+        letters.update(word)
+    letters = list(letters)
+    first_letters = {word[0] for word in puzzle}  # Letters that can't be 0
+    
+    # Generate all possible digit assignments
+    for perm in permutations(range(10), len(letters)):
+        # Create a digit mapping (letter to digit)
+        mapping = dict(zip(letters, perm))
+        
+        # Skip if any first letter is mapped to 0
+        if any(mapping[fl] == 0 for fl in first_letters):
+            continue
+        
+        # Evaluate each word as a number
+        numbers = []
+        for word in puzzle:
+            num = 0
+            for letter in word:
+                num = num * 10 + mapping[letter]
+            numbers.append(num)
+        
+        # Check if the equation holds
+        if sum(numbers[:-1]) == numbers[-1]:
+            print("Solution found:")
+            for word, num in zip(puzzle, numbers):
+                print(f"{word} = {num}")
+            return True
+    
+    print("No solution found")
+    return False
+
+# Example usage:
+puzzle = ["SEND", "MORE", "MONEY"]
+print(f"Solving: {' + '.join(puzzle[:-1])} = {puzzle[-1]}")
+solve_cryptarithmetic(puzzle)
