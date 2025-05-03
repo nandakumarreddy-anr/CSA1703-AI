@@ -1,0 +1,97 @@
+print("192365034 NANDA REDDY")
+class MapColoringCSP:
+    def __init__(self, variables, domains, neighbors):
+        """
+        Initialize the Map Coloring CSP problem.
+        
+        :param variables: List of regions to be colored
+        :param domains: Dictionary mapping each variable to its possible colors
+        :param neighbors: Dictionary mapping each region to its adjacent regions
+        """
+        self.variables = variables
+        self.domains = domains
+        self.neighbors = neighbors
+        self.assignment = {}
+    
+    def is_consistent(self, variable, color, assignment):
+        """
+        Check if assigning a color to a variable is consistent with current assignments.
+        
+        :param variable: The region being colored
+        :param color: The color being assigned
+        :param assignment: Current partial assignment
+        :return: True if consistent, False otherwise
+        """
+        for neighbor in self.neighbors.get(variable, []):
+            if neighbor in assignment and assignment[neighbor] == color:
+                return False
+        return True
+    
+    def backtracking_search(self, assignment=None):
+        """
+        Perform backtracking search to find a valid coloring.
+        
+        :param assignment: Current partial assignment (starts empty)
+        :return: A complete assignment if found, None otherwise
+        """
+        if assignment is None:
+            assignment = {}
+        
+        # If assignment is complete, return it
+        if len(assignment) == len(self.variables):
+            return assignment
+        
+        # Select unassigned variable
+        unassigned = [v for v in self.variables if v not in assignment]
+        first = unassigned[0]
+        
+        # Try all colors in domain
+        for color in self.domains[first]:
+            if self.is_consistent(first, color, assignment):
+                assignment[first] = color
+                result = self.backtracking_search(assignment)
+                if result is not None:
+                    return result
+                del assignment[first]
+        
+        return None
+    
+    def solve(self):
+        """Solve the map coloring problem and return the solution."""
+        solution = self.backtracking_search()
+        if solution:
+            return solution
+        else:
+            return "No solution exists"
+
+# Example usage
+if __name__ == "__main__":
+    # Define the map regions (variables)
+    regions = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+    
+    # Define possible colors for each region (domains)
+    colors = ['Red', 'Green', 'Blue']
+    domains = {region: colors for region in regions}
+    
+    # Define neighboring regions (constraints)
+    neighbors = {
+        'WA': ['NT', 'SA'],
+        'NT': ['WA', 'SA', 'Q'],
+        'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+        'Q': ['NT', 'SA', 'NSW'],
+        'NSW': ['Q', 'SA', 'V'],
+        'V': ['SA', 'NSW'],
+        'T': []
+    }
+    
+    # Create and solve the CSP
+    map_coloring = MapColoringCSP(regions, domains, neighbors)
+    solution = map_coloring.solve()
+    
+    # Print the solution
+    if isinstance(solution, str):
+        print(solution)
+    else:
+        print("Map Coloring Solution:")
+        for region, color in solution.items():
+            print(f"{region}: {color}")
