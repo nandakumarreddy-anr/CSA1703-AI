@@ -1,0 +1,93 @@
+print("192365034 NANDA REDDY")
+class DecisionTree:
+    def __init__(self, max_depth=3):
+        self.max_depth = max_depth
+        self.tree = None
+
+    def fit(self, X, y):
+        self.tree = self._build_tree(X, y, depth=0)
+
+    def _build_tree(self, X, y, depth):
+        if depth >= self.max_depth or len(set(y)) == 1:
+            return {"class": max(set(y), key=y.count)}
+        
+        best_split = self._find_best_split(X, y)
+        if not best_split:
+            return {"class": max(set(y), key=y.count)}
+        
+        feature_idx, threshold = best_split
+        left_X, left_y, right_X, right_y = self._split_data(X, y, feature_idx, threshold)
+        
+        left_subtree = self._build_tree(left_X, left_y, depth + 1)
+        right_subtree = self._build_tree(right_X, right_y, depth + 1)
+        
+        return {
+            "feature_idx": feature_idx,
+            "threshold": threshold,
+            "left": left_subtree,
+            "right": right_subtree
+        }
+
+    def _find_best_split(self, X, y):
+        best_gini = float('inf')
+        best_split = None
+        
+        for feature_idx in range(len(X[0])):
+            thresholds = set([x[feature_idx] for x in X])
+            for threshold in thresholds:
+                left_y = [y[i] for i, x in enumerate(X) if x[feature_idx] <= threshold]
+                right_y = [y[i] for i, x in enumerate(X) if x[feature_idx] > threshold]
+                
+                if not left_y or not right_y:
+                    continue
+                
+                gini = self._calculate_gini(left_y, right_y)
+                if gini < best_gini:
+                    best_gini = gini
+                    best_split = (feature_idx, threshold)
+        return best_split
+
+    def _calculate_gini(self, left_y, right_y):
+        total = len(left_y) + len(right_y)
+        p_left = len(left_y) / total
+        p_right = len(right_y) / total
+        
+        gini_left = 1 - sum((left_y.count(c) / len(left_y)) ** 2 for c in set(left_y))
+        gini_right = 1 - sum((right_y.count(c) / len(right_y)) ** 2 for c in set(right_y))
+        
+        return p_left * gini_left + p_right * gini_right
+
+    def _split_data(self, X, y, feature_idx, threshold):
+        left_X, left_y = [], []
+        right_X, right_y = [], []
+        
+        for i, x in enumerate(X):
+            if x[feature_idx] <= threshold:
+                left_X.append(x)
+                left_y.append(y[i])
+            else:
+                right_X.append(x)
+                right_y.append(y[i])
+        
+        return left_X, left_y, right_X, right_y
+
+    def predict(self, X):
+        return [self._predict(x, self.tree) for x in X]
+
+    def _predict(self, x, node):
+        if "class" in node:
+            return node["class"]
+        if x[node["feature_idx"]] <= node["threshold"]:
+            return self._predict(x, node["left"])
+        else:
+            return self._predict(x, node["right"])
+
+# Example usage
+X_train = [[1, 2], [1, 4], [2, 2], [2, 4], [3, 1], [3, 3]]
+y_train = [0, 1, 1, 0, 1, 0]
+
+dt = DecisionTree(max_depth=2)
+dt.fit(X_train, y_train)
+
+X_test = [[2, 3]]
+print("Prediction:", dt.predict(X_test))  # Output: [1]
