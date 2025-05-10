@@ -1,0 +1,45 @@
+% Simple Pattern Matching System  
+% Shows matching between patterns and target strings  
+
+% Main predicate with name display  
+pattern_match :-  
+    write('Pattern Matching System by NANDA REDDY-192365034'), nl,  
+    write('Enter pattern (in quotes): '),  
+    read(Pattern),  
+    write('Enter target string (in quotes): '),  
+    read(Target),  
+    (   match(Pattern, Target)  
+    ->  write('SUCCESS: Patterns match!'), nl  
+    ;   write('FAILURE: Patterns do not match'), nl  
+    ),  
+    write('Process completed by NANDA REDDY-192365034'), nl.  
+
+% Base case: empty pattern matches empty string  
+match([], []).  
+
+% Wildcard matches any single character  
+match(['_'|Ptail], [_|Ttail]) :-  
+    match(Ptail, Ttail).  
+
+% Regular character match  
+match([Pchar|Ptail], [Pchar|Ttail]) :-  
+    match(Ptail, Ttail).  
+
+% Example Queries:  
+% ?- pattern_match.  
+% Pattern Matching System by NANDA REDDY-192365034  
+% Enter pattern (in quotes): "a_b".  
+% Enter target string (in quotes): "axb".  
+% SUCCESS: Patterns match!  
+% Process completed by NANDA REDDY-192365034  
+%  
+% ?- pattern_match.  
+% Pattern Matching System by NANDA REDDY-192365034  
+% Enter pattern (in quotes): "a_c".  
+% Enter target string (in quotes): "axb".  
+% FAILURE: Patterns do not match  
+% Process completed by NANDA REDDY-192365034  
+
+% Alternative direct matching:  
+% ?- match([a,_,b], [a,x,b]).  % true  
+% ?- match([a,_,c], [a,x,b]).  % false  
