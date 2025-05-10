@@ -1,0 +1,15 @@
+% Base case: sum of integers from 1 to 0 is 0
+sum_integers(0, 0).
+
+% Recursive case: sum from 1 to N is N plus sum from 1 to N-1
+sum_integers(N, Sum) :-
+    N > 0,
+    Prev is N - 1,
+    sum_integers(Prev, PartialSum),
+    Sum is PartialSum + N.
+
+% Helper predicate with input validation
+sum_1_to_n(N, Sum) :-
+    integer(N),
+    N >= 0,
+    sum_integers(N, Sum).
