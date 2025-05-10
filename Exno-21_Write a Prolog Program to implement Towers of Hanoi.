@@ -1,0 +1,38 @@
+/* Towers of Hanoi with Name Display */
+:- dynamic move_count/1.
+
+% Initialize move counter
+start_hanoi :-
+    retractall(move_count(_)),
+    assertz(move_count(0)),
+    write('NANDA REDDY-192365034'), nl,
+    write('Towers of Hanoi Solution:'), nl, nl,
+    hanoi(3, left, right, center).
+
+% Base case: Move single disk
+hanoi(1, Start, End, _) :-
+    increment_count,
+    write_move(1, Start, End).
+
+% Recursive case
+hanoi(N, Start, End, Aux) :-
+    N > 1,
+    M is N - 1,
+    hanoi(M, Start, Aux, End),
+    increment_count,
+    write_move(N, Start, End),
+    hanoi(M, Aux, End, Start).
+
+% Helper predicates
+increment_count :-
+    move_count(X),
+    retract(move_count(X)),
+    Y is X + 1,
+    assertz(move_count(Y)).
+
+write_move(Disk, From, To) :-
+    move_count(Count),
+    format('Move ~d: Disk ~d from ~w to ~w~n', [Count, Disk, From, To]).
+
+% Entry point
+:- initialization(start_hanoi).
