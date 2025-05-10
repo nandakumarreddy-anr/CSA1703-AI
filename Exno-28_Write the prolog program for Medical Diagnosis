@@ -1,0 +1,69 @@
+% Knowledge Base: Symptoms and Diseases
+
+% Symptoms associated with diseases
+symptom(flu, fever).
+symptom(flu, headache).
+symptom(flu, body_ache).
+symptom(flu, fatigue).
+symptom(cold, runny_nose).
+symptom(cold, sneezing).
+symptom(cold, sore_throat).
+symptom(cold, mild_fever).
+symptom(allergy, itchy_eyes).
+symptom(allergy, sneezing).
+symptom(allergy, rash).
+symptom(migraine, severe_headache).
+symptom(migraine, nausea).
+symptom(migraine, light_sensitivity).
+
+% Disease severity levels
+severity(flu, moderate).
+severity(cold, mild).
+severity(allergy, mild).
+severity(migraine, severe).
+
+% Main Diagnosis Predicate
+diagnose(Person, Disease) :-
+    write('Medical Diagnosis System by NANDA REDDY-192365034'), nl,
+    write('Please answer yes/no to the following symptoms:'), nl, nl,
+    has_symptoms(Person, Disease).
+
+% Check symptoms for a disease
+has_symptoms(Person, Disease) :-
+    symptom(Disease, Symptom),
+    ask(Person, Symptom),
+    fail.  % Force backtracking to check all symptoms
+has_symptoms(Person, Disease) :-
+    severity(Disease, Severity),
+    write('\nDiagnosis for '), write(Person), write(': '),
+    write(Disease), write(' ('), write(Severity), write(')'), nl,
+    write('Diagnosis completed by NANDA REDDY-192365034'), nl.
+
+% Ask user about symptoms
+ask(Person, Symptom) :-
+    write('Does '), write(Person), write(' have '), write(Symptom), write('? '),
+    read(Response),
+    Response = yes.
+
+% Example Usage:
+% ?- diagnose(john, Disease).
+% Medical Diagnosis System by NANDA REDDY-192365034
+% Please answer yes/no to the following symptoms:
+%
+% Does john have fever? yes.
+% Does john have headache? yes.
+% Does john have body_ache? yes.
+% Does john have fatigue? no.
+%
+% Diagnosis for john: flu (moderate)
+% Diagnosis completed by NANDA REDDY-192365034
+% Disease = flu ;
+%
+% Does john have runny_nose? yes.
+% Does john have sneezing? yes.
+% ... (other questions)
+%
+% Diagnosis for john: cold (mild)
+% Diagnosis completed by NANDA REDDY-192365034
+% Disease = cold ;
+% false.
