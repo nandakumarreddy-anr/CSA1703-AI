@@ -1,0 +1,40 @@
+/* Bird Flight Database with Name Display */
+:- initialization(start_bird_check).
+
+% Display name when program starts
+start_bird_check :-
+    write('NANDA REDDY-192365034'), nl,
+    write('Bird Flight Checker'), nl, nl,
+    write('Available birds: penguin, sparrow, ostrich, eagle, chicken, bat'), nl, nl.
+
+% Facts about birds that can fly
+can_fly(sparrow).
+can_fly(eagle).
+can_fly(bat).      % Though technically a mammal, often included in such examples
+
+% Facts about birds that cannot fly
+cannot_fly(penguin).
+cannot_fly(ostrich).
+cannot_fly(chicken).
+
+% Rules to check flight capability
+flight_check(Bird) :-
+    (can_fly(Bird) -> 
+        format('The ~w can fly!~n', [Bird])
+    ;
+    cannot_fly(Bird) -> 
+        format('The ~w cannot fly.~n', [Bird])
+    ;
+        format('~w is not in our database.~n', [Bird])).
+
+% Example queries that will be shown when program runs
+:- initialization((
+    write('Example queries:'), nl,
+    write('?- flight_check(penguin).'), nl,
+    write('?- flight_check(eagle).'), nl,
+    write('?- flight_check(unicorn).'), nl, nl,
+    write('Running example queries:'), nl, nl,
+    flight_check(penguin),
+    flight_check(eagle),
+    flight_check(unicorn)
+)).
