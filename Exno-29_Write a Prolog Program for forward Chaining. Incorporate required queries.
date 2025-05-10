@@ -1,0 +1,48 @@
+% Forward Chaining Inference Engine  
+% Knowledge Base with Rules and Facts  
+
+:- dynamic known/2.  % Allow dynamic assertion of facts  
+
+% Initial facts  
+fact(has_feathers).  
+fact(can_fly).  
+fact(lays_eggs).  
+
+% Rules  
+rule(bird, [has_feathers, can_fly]).  
+rule(penguin, [has_feathers, lays_eggs]).  
+rule(ostrich, [has_feathers, lays_eggs]).  
+
+% Main forward chaining predicate  
+forward_chain :-  
+    write('Forward Chaining System by NANDA REDDY-192365034'), nl,  
+    write('Initial Facts: '), listing(fact/1), nl,  
+    iterate_forward,  
+    write('\nFinal Inferences: '), listing(known/2), nl,  
+    write('Process completed by NANDA REDDY-192365034'), nl.  
+
+% Iterate until no new facts can be inferred  
+iterate_forward :-  
+    rule(Conclusion, Premises),  
+    \+ known(Conclusion, _),  
+    check_premises(Premises),  
+    assert_known(Conclusion),  
+    write('Inferred new fact: '), write(Conclusion), nl,  
+    iterate_forward.  
+iterate_forward.  % Base case - no more inferences  
+
+% Check if all premises are known  
+check_premises([]).  
+check_premises([Premise|Rest]) :-  
+    (fact(Premise) ; known(Premise, _)),  
+    check_premises(Rest).  
+
+% Assert a new known fact  
+assert_known(Fact) :-  
+    assertz(known(Fact, forward)).  
+
+% Utility to clear knowledge  
+reset_kb :-  
+    retractall(known(_, _)),  
+    write('Knowledge base cleared by NANDA REDDY-192365034'), nl.  
+
