@@ -1,0 +1,93 @@
+/* Interactive Diet Recommendation System */
+:- dynamic current_user/1.
+
+main :-
+    nl,
+    write('***********************************************************************'), nl,
+    write('* DIET RECOMMENDATION SYSTEM - Created by NANDA REDDY-192365034 *'), nl,
+    write('***********************************************************************'), nl, nl,
+    get_user_name,
+    menu_loop.
+
+get_user_name :-
+    write('Please enter your name: '),
+    read_line_to_string(user_input, Name),
+    assertz(current_user(Name)),
+    nl,
+    format('Hello ~w! Let me suggest a diet plan for your condition.', [Name]), nl, nl.
+
+menu_loop :-
+    write('Available conditions:'), nl,
+    write('1. Diabetes'), nl,
+    write('2. Hypertension (High Blood Pressure)'), nl,
+    write('3. Obesity'), nl,
+    write('4. Anemia'), nl,
+    write('5. Thyroid Disorder'), nl,
+    write('6. Exit'), nl, nl,
+    write('Please enter your choice (1-6): '),
+    read(Choice),
+    (Choice =:= 6 -> 
+        current_user(Name),
+        format('Goodbye ~w! Stay healthy!', [Name]), nl, nl, halt
+    ;
+    process_choice(Choice)),
+    menu_loop.
+
+process_choice(1) :- recommend_diabetes.
+process_choice(2) :- recommend_hypertension.
+process_choice(3) :- recommend_obesity.
+process_choice(4) :- recommend_anemia.
+process_choice(5) :- recommend_thyroid.
+process_choice(_) :- write('Invalid choice. Please try again.'), nl.
+
+recommend_diabetes :-
+    nl,
+    write('DIABETES DIET RECOMMENDATIONS:'), nl, nl,
+    write('1. Emphasize high-fiber foods: whole grains, legumes'), nl,
+    write('2. Include non-starchy vegetables: broccoli, spinach, carrots'), nl,
+    write('3. Choose lean proteins: fish, chicken, tofu'), nl,
+    write('4. Healthy fats: avocados, nuts, olive oil'), nl,
+    write('5. Avoid: sugary drinks, refined carbs, processed foods'), nl, nl,
+    write('Meal timing is crucial - eat at regular intervals.'), nl, nl.
+
+recommend_hypertension :-
+    nl,
+    write('HYPERTENSION DIET RECOMMENDATIONS:'), nl, nl,
+    write('1. DASH diet recommended (Dietary Approaches to Stop Hypertension)'), nl,
+    write('2. Reduce sodium intake to <1500mg/day'), nl,
+    write('3. Increase potassium-rich foods: bananas, sweet potatoes'), nl,
+    write('4. Include calcium-rich foods: low-fat dairy, leafy greens'), nl,
+    write('5. Avoid: processed meats, canned soups, salty snacks'), nl, nl,
+    write('Monitor your blood pressure regularly.'), nl, nl.
+
+recommend_obesity :-
+    nl,
+    write('OBESITY DIET RECOMMENDATIONS:'), nl, nl,
+    write('1. Portion control is essential'), nl,
+    write('2. High-protein foods to promote satiety'), nl,
+    write('3. Fiber-rich vegetables to feel full longer'), nl,
+    write('4. Drink plenty of water before meals'), nl,
+    write('5. Avoid: fried foods, sugary beverages, fast food'), nl, nl,
+    write('Combine with regular physical activity.'), nl, nl.
+
+recommend_anemia :-
+    nl,
+    write('ANEMIA DIET RECOMMENDATIONS:'), nl, nl,
+    write('1. Iron-rich foods: red meat, spinach, lentils'), nl,
+    write('2. Vitamin C to enhance iron absorption: citrus fruits'), nl,
+    write('3. Include folate sources: asparagus, beans'), nl,
+    write('4. Vitamin B12 sources: eggs, dairy, fortified cereals'), nl,
+    write('5. Avoid: calcium supplements with iron-rich meals'), nl, nl,
+    write('Get regular blood tests to monitor levels.'), nl, nl.
+
+recommend_thyroid :-
+    nl,
+    write('THYROID DIET RECOMMENDATIONS:'), nl, nl,
+    write('1. Selenium-rich foods: Brazil nuts, tuna, eggs'), nl,
+    write('2. Zinc sources: oysters, beef, pumpkin seeds'), nl,
+    write('3. Use iodized salt (unless contraindicated)'), nl,
+    write('4. Anti-inflammatory foods: berries, fatty fish'), nl,
+    write('5. Avoid: excessive raw cruciferous vegetables'), nl, nl,
+    write('Consult with your endocrinologist regularly.'), nl, nl.
+
+:- initialization(main).
