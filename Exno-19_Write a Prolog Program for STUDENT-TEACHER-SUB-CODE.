@@ -1,0 +1,80 @@
+/* STUDENT-TEACHER-SUBJECT DATABASE WITH CODES */
+
+% Facts - Database Entries
+
+% Students
+student(101, 'Alice Johnson', 3, 'Computer Science').
+student(102, 'Bob Smith', 2, 'Mathematics').
+student(103, 'Charlie Brown', 4, 'Physics').
+student(104, 'Diana Prince', 3, 'Computer Science').
+student(105, 'Ethan Hunt', 1, 'Chemistry').
+
+% Teachers
+teacher(201, 'Dr. Williams', 'Computer Science', 15).
+teacher(202, 'Prof. Davis', 'Mathematics', 20).
+teacher(203, 'Dr. Lee', 'Physics', 12).
+teacher(204, 'Prof. Wilson', 'Chemistry', 18).
+
+% Subjects with codes
+subject('CS101', 'Introduction to Programming', 'Computer Science').
+subject('CS201', 'Data Structures', 'Computer Science').
+subject('MATH202', 'Linear Algebra', 'Mathematics').
+subject('PHY301', 'Quantum Mechanics', 'Physics').
+subject('CHEM101', 'General Chemistry', 'Chemistry').
+
+% Enrollment: student_id, subject_code
+enrollment(101, 'CS101').
+enrollment(101, 'MATH202').
+enrollment(102, 'MATH202').
+enrollment(103, 'PHY301').
+enrollment(104, 'CS201').
+enrollment(105, 'CHEM101').
+
+% Teaching: teacher_id, subject_code
+teaching(201, 'CS101').
+teaching(201, 'CS201').
+teaching(202, 'MATH202').
+teaching(203, 'PHY301').
+teaching(204, 'CHEM101').
+
+% Rules for Querying the Database
+
+% 1. Find all subjects a student is taking
+student_subjects(StudentID, Subjects) :-
+    findall(SubCode, enrollment(StudentID, SubCode), Subjects).
+
+% 2. Find all students in a particular subject
+subject_students(SubCode, Students) :-
+    findall(StudentID, enrollment(StudentID, SubCode), Students).
+
+% 3. Find the teacher for a specific subject
+subject_teacher(SubCode, TeacherID, TeacherName) :-
+    teaching(TeacherID, SubCode),
+    teacher(TeacherID, TeacherName, _, _).
+
+% 4. Find all subjects taught by a teacher
+teacher_subjects(TeacherID, Subjects) :-
+    findall(SubCode, teaching(TeacherID, SubCode), Subjects).
+
+% 5. Find students and their teachers
+student_teachers(StudentID, Teachers) :-
+    enrollment(StudentID, SubCode),
+    teaching(TeacherID, SubCode),
+    teacher(TeacherID, Name, _, _),
+    assertz(temp_teacher(Name)),
+    fail.
+student_teachers(_, Teachers) :-
+    findall(Name, temp_teacher(Name), Teachers),
+    retractall(temp_teacher(_)).
+
+% 6. Find all computer science students
+cs_students(Students) :-
+    findall(Name, (student(_, Name, _, 'Computer Science')), Students).
+
+% 7. Find subject details by code
+subject_details(SubCode, Title, Department) :-
+    subject(SubCode, Title, Department).
+
+% 8. Find all subjects in a department
+department_subjects(Department, Subjects) :-
+    findall(SubCode, subject(SubCode, _, Department), Subjects).
