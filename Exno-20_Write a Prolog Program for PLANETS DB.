@@ -1,0 +1,32 @@
+/* Simple Planets Database */
+
+% Facts about planets: planet(Name, Type, PositionFromSun, DiameterKm)
+planet(mercury, terrestrial, 1, 4879).
+planet(venus, terrestrial, 2, 12104).
+planet(earth, terrestrial, 3, 12742).
+planet(mars, terrestrial, 4, 6779).
+planet(jupiter, gas_giant, 5, 139820).
+planet(saturn, gas_giant, 6, 116460).
+planet(uranus, ice_giant, 7, 50724).
+planet(neptune, ice_giant, 8, 49244).
+
+% Rules to query the database
+
+% 1. Get all planets
+all_planets(Planets) :- findall(Name, planet(Name, _, _, _), Planets).
+
+% 2. Find planets by type
+planets_by_type(Type, Planets) :- 
+    findall(Name, planet(Name, Type, _, _), Planets).
+
+% 3. Find planet details
+planet_details(Name, Type, Position, Diameter) :-
+    planet(Name, Type, Position, Diameter).
+
+% 4. Find planets larger than a certain size
+larger_than(Diameter, Planets) :-
+    findall(Name, (planet(Name, _, _, D), D > Diameter), Planets).
+
+% 5. Find planets in a position range
+planets_between(MinPos, MaxPos, Planets) :-
+    findall(Name, (planet(Name, _, Pos, _), Pos >= MinPos, Pos =< MaxPos), Planets).
