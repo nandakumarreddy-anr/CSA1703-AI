@@ -1,0 +1,44 @@
+% Main predicate to count vowels  
+count_vowels :-  
+    write('Vowel Counter by NANDA REDDY-192365034'), nl,  
+    write('Enter a word (in lowercase, between single quotes): '),  
+    read(Word),  
+    atom_chars(Word, Chars),  
+    count_vowels(Chars, 0, Count),  
+    write('Number of vowels: '), write(Count), nl,  
+    write('Process completed by NANDA REDDY-192365034'), nl.  
+
+% Base case: empty list  
+count_vowels([], Count, Count).  
+
+% Recursive case: vowel found  
+count_vowels([H|T], Acc, Count) :-  
+    vowel(H),  
+    NewAcc is Acc + 1,  
+    count_vowels(T, NewAcc, Count).  
+
+% Recursive case: not a vowel  
+count_vowels([H|T], Acc, Count) :-  
+    \+ vowel(H),  
+    count_vowels(T, Acc, Count).  
+
+% Vowel definitions  
+vowel(a). vowel(e). vowel(i). vowel(o). vowel(u).  
+
+% Example Queries:  
+% ?- count_vowels.  
+% Vowel Counter by NANDA REDDY-192365034  
+% Enter a word (in lowercase, between single quotes): 'hello'.  
+% Number of vowels: 2  
+% Process completed by NANDA REDDY-192365034  
+%  
+% ?- count_vowels.  
+% Vowel Counter by NANDA REDDY-192365034  
+% Enter a word (in lowercase, between single quotes): 'programming'.  
+% Number of vowels: 3  
+% Process completed by NANDA REDDY-192365034  
+%  
+% Direct counting alternative:  
+% ?- atom_chars('elephant', Chars), count_vowels(Chars, 0, Count).  
+% Chars = [e, l, e, p, h, a, n, t],  
+% Count = 3  
