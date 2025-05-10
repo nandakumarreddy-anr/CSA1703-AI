@@ -1,0 +1,44 @@
+/* Fruits and Colors Database with Backtracking */
+:- initialization(start_fruit_color).
+
+% Display name when program starts
+start_fruit_color :-
+    write('Program created by: NANDA REDDY-192365034'), nl, nl,
+    write('FRUIT-COLOR RELATIONSHIP FINDER'), nl, nl,
+    write('Available queries:'), nl,
+    write('1. fruit_color(Fruit, Color) - Find color of a fruit or fruits of a color'), nl,
+    write('2. list_fruits - List all fruits and their colors'), nl, nl,
+    write('Try: fruit_color(apple, Color) or fruit_color(Fruit, yellow)'), nl, nl.
+
+% Fruit-color relationships
+fruit_color(apple, red).
+fruit_color(banana, yellow).
+fruit_color(grape, purple).
+fruit_color(orange, orange).
+fruit_color(blueberry, blue).
+fruit_color(pear, green).
+fruit_color(apple, green).  % Some apples are green
+fruit_color(lemon, yellow).
+fruit_color(strawberry, red).
+fruit_color(kiwi, green).
+
+% List all fruits and their colors
+list_fruits :-
+    fruit_color(Fruit, Color),
+    format('~w is ~w~n', [Fruit, Color]),
+    fail.  % Force backtracking to find all solutions
+list_fruits.  % Succeed after showing all
+
+% Example queries that will run automatically
+:- initialization((
+    nl, write('Running example queries:'), nl, nl,
+    write('What color are apples?'), nl,
+    fruit_color(apple, Color), 
+    format('Apple can be ~w~n', [Color]),
+    fail ; true,
+    nl,
+    write('What fruits are yellow?'), nl,
+    fruit_color(Fruit, yellow),
+    format('~w is yellow~n', [Fruit]),
+    fail ; true
+)).
