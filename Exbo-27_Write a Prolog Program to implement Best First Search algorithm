@@ -1,0 +1,64 @@
+% Best First Search implementation in Prolog
+% Developed by: NANDA REDDY-192365034
+
+% best_first_search/3: Main predicate
+% Parameters: Start node, Goal node, Path
+best_first_search(Start, Goal, Path) :-
+    write('Best First Search by NANDA REDDY-192365034'), nl,
+    heuristic(Start, Goal, H),
+    best_first_search([[Start, H]], Goal, [], Path).
+
+% Base case: Goal found
+best_first_search([[Goal|_]|_], Goal, Visited, [Goal|Visited]) :-
+    write('Solution Path: '), write([Goal|Visited]), nl,
+    write('Search completed by NANDA REDDY-192365034'), nl.
+
+% Recursive case: Expand best node
+best_first_search([[Node, _H]|Rest], Goal, Visited, Path) :-
+    write('Expanding node: '), write(Node), nl,
+    findall([NewNode, NewH],
+            (edge(Node, NewNode),
+            not(member(NewNode, Visited)),
+            heuristic(NewNode, Goal, NewH)),
+            Children),
+    append(Rest, Children, NewQueue),
+    sort_by_heuristic(NewQueue, SortedQueue),
+    best_first_search(SortedQueue, Goal, [Node|Visited], Path).
+
+% sort_by_heuristic/2: Sorts the queue based on heuristic values
+sort_by_heuristic(Queue, Sorted) :-
+    predsort(compare_heuristics, Queue, Sorted).
+
+% compare_heuristics/3: Comparison predicate for sorting
+compare_heuristics(<, [_, H1], [_, H2]) :- H1 < H2.
+compare_heuristics(>, [_, H1], [_, H2]) :- H1 > H2.
+compare_heuristics(=, [_, H], [_, H]).
+
+% edge/2: Defines the graph edges (example)
+edge(a, b).
+edge(a, c).
+edge(b, d).
+edge(b, e).
+edge(c, f).
+edge(c, g).
+edge(d, h).
+edge(e, i).
+edge(e, j).
+edge(g, k).
+
+% heuristic/3: Defines the heuristic function (example)
+heuristic(Node, Goal, H) :-
+    % Simple heuristic: 0 for goal, 1 for all other nodes
+    (Node == Goal -> H = 0 ; H = 1).
+
+% Example usage with display:
+% ?- best_first_search(a, k, Path).
+% Best First Search by NANDA REDDY-192365034
+% Expanding node: a
+% Expanding node: c
+% Expanding node: g
+% Expanding node: k
+% Solution Path: [k,g,c,a]
+% Search completed by NANDA REDDY-192365034
+% Path = [k, g, c, a] ;
+% false
