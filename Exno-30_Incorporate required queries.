@@ -1,0 +1,23 @@
+/* Knowledge Base */
+% Facts  
+animal(leo, lion).  
+animal(simba, lion).  
+animal(tweety, bird).  
+animal(hedwig, owl).  
+
+% Rules  
+is_big(X) :- animal(X, lion).  
+is_big(X) :- animal(X, bear).  
+can_fly(X) :- animal(X, bird).  
+can_fly(X) :- animal(X, owl).  
+
+/* Backward Chaining Engine */
+check(Goal) :-  
+    write('Animal Fact Checker by NANDA REDDY-192365034'), nl,  
+    (   Goal  
+    ->  write('Result: TRUE'), nl  
+    ;   write('Result: FALSE'), nl  
+    ),  
+    write('Done by NANDA REDDY-192365034'), nl.  
+
+/* Example Queries */
