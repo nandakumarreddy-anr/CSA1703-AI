@@ -1,0 +1,41 @@
+/* Database of people with their names and dates of birth (DOB) */
+/* Format: person(Name, DOB) where DOB is date(Year, Month, Day) */
+
+% Facts - our database entries
+person(john_doe, date(1990, 5, 15)).
+person(jane_smith, date(1985, 11, 3)).
+person(michael_johnson, date(1978, 2, 28)).
+person(emily_wilson, date(1995, 7, 19)).
+person(robert_brown, date(1982, 9, 10)).
+
+% Rules to query the database
+
+% 1. Find DOB for a given name
+get_dob(Name, DOB) :-
+    person(Name, DOB).
+
+% 2. Find all names born in a specific year
+born_in_year(Year, Name) :-
+    person(Name, date(Year, _, _)).
+
+% 3. Find all names born in a specific month
+born_in_month(Month, Name) :-
+    person(Name, date(_, Month, _)).
+
+% 4. Find people born between two years
+born_between_years(StartYear, EndYear, Name) :-
+    person(Name, date(Year, _, _)),
+    Year >= StartYear,
+    Year =< EndYear.
+
+% 5. Calculate age (assuming current date is 2023-10-15 for example)
+age(Name, Age) :-
+    person(Name, date(Year, Month, Day)),
+    CurrentDate = date(2023, 10, 15),
+    age_calculation(date(Year, Month, Day), CurrentDate, Age).
+
+age_calculation(date(BY, BM, BD), date(CY, CM, CD), Age) :-
+    (CY > BY, CM > BM -> Age is CY - BY;
+     CY > BY, CM =:= BM, CD >= BD -> Age is CY - BY;
+     CY > BY -> Age is CY - BY - 1;
+     Age = 0).
