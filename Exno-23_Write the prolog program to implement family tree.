@@ -1,0 +1,67 @@
+/* Family Tree Program */
+:- initialization(start_family_tree).
+
+% Display name when program starts
+start_family_tree :-
+    write('NANDA REDDY-192365034'), nl,
+    write('Family Tree Program'), nl, nl,
+    write('Available commands:'), nl,
+    write('parent(X, Y). - Check if X is parent of Y'), nl,
+    write('grandparent(X, Y). - Check if X is grandparent of Y'), nl,
+    write('sibling(X, Y). - Check if X and Y are siblings'), nl,
+    write('ancestor(X, Y). - Check if X is ancestor of Y'), nl, nl,
+    write('Sample family members: raj, priya, arjun, meera, vijay, sunita'), nl, nl.
+
+% Family database facts
+male(raj).
+male(arjun).
+male(vijay).
+female(priya).
+female(meera).
+female(sunita).
+
+% Parent relationships
+parent(raj, arjun).
+parent(raj, meera).
+parent(priya, arjun).
+parent(priya, meera).
+parent(arjun, vijay).
+parent(sunita, vijay).
+
+% Marriage relationships
+married(raj, priya).
+married(arjun, sunita).
+
+% Family relationship rules
+father(Father, Child) :-
+    male(Father),
+    parent(Father, Child).
+
+mother(Mother, Child) :-
+    female(Mother),
+    parent(Mother, Child).
+
+grandparent(GP, GC) :-
+    parent(GP, Parent),
+    parent(Parent, GC).
+
+sibling(X, Y) :-
+    parent(P, X),
+    parent(P, Y),
+    X \= Y.
+
+ancestor(Ancestor, Descendant) :-
+    parent(Ancestor, Descendant).
+ancestor(Ancestor, Descendant) :-
+    parent(Ancestor, Person),
+    ancestor(Person, Descendant).
+
+% Example queries that will run automatically
+:- initialization((
+    write('Running example queries:'), nl, nl,
+    write('Is raj the father of arjun? '), (father(raj, arjun) -> write('Yes') ; write('No')), nl,
+    write('Is priya the mother of meera? '), (mother(priya, meera) -> write('Yes') ; write('No')), nl,
+    write('Is raj the grandparent of vijay? '), (grandparent(raj, vijay) -> write('Yes') ; write('No')), nl,
+    write('Are arjun and meera siblings? '), (sibling(arjun, meera) -> write('Yes') ; write('No')), nl,
+    write('Is raj an ancestor of vijay? '), (ancestor(raj, vijay) -> write('Yes') ; write('No')), nl
+)).
